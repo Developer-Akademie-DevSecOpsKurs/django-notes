@@ -2,15 +2,16 @@
 
 ## Description
 
-A full-stack notes application built with Django that allows users to create, read, update, and delete personal notes. The application features a RESTful API backend powered by Django and Django REST Framework, with user authentication, note management capabilities, and a clean, responsive user interface.
+A full-stack notes application built with Django that allows users to create, read, update, and delete personal notes. For more information about the application concept, refer to the [concept-docs](./docs/app-concept.md).
 
-Key features:
+**Key features**
+
 - User authentication and authorization
 - Create, edit, and delete notes
 - Organize notes with categories or tags
 - Search and filter functionality
 - Responsive web interface
-- RESTful API for programmatic access
+- RESTful API for programmatic access (in later version)
 
 ## Quickstart
 
@@ -18,7 +19,7 @@ To get the application running quickly:
 
 0. **Clone the repository and navigate to it:**
    ```bash
-   git clone kodskokdosaksdao
+   git clone git@gitlab.com:spmsec/django-notes.git
    ```
 
 1. **Create and activate a virtual environment:**
