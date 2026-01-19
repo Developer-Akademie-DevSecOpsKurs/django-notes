@@ -96,22 +96,12 @@ jobs:
         uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: "local/django-app:${{ github.sha }}"
+          exit-code: "1"
           format: "sarif"
           output: "trivy-image.sarif"
           severity: "${{ env.TRIVY_SEVERITY }}"
           vuln-type: "os,library"
           ignore-unfixed: ${{ env.TRIVY_IGNORE_UNFIXED }}
-
-      # Optional: Den Build bei HIGH/CRITICAL brechen lassen (zusätzlich zum SARIF Upload).
-      # Trivy-Action liefert SARIF, aber "fail the job" steuert man hier sauber über exit-code.
-      - name: Enforce policy (fail on findings)
-        run: |
-          trivy image \
-            --severity "${TRIVY_SEVERITY}" \
-            --vuln-type os,library \
-            --exit-code 1 \
-            $( [ "${TRIVY_IGNORE_UNFIXED}" = "true" ] && echo "--ignore-unfixed" ) \
-            "local/django-app:${{ github.sha }}"
 
       - name: Upload SARIF to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
