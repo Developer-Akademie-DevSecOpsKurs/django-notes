@@ -39,4 +39,4 @@ jobs:
                   push: true
                   tags: |
                       ghcr.io/developer-akademie-devsecopskurs/${{ github.event.repository.name }}:latest
-                      ghcr.io/developer-akademie-devsecopskurs/${{ github.event.repository.name }}:${{ github.ref_name }}
+                      ghcr.io/developer-akademie-devsecopskurs/${{ github.event.repository.name }}:${{ github.sha }}
