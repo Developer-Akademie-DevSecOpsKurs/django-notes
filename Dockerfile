@@ -5,9 +5,6 @@ WORKDIR ${_WORKDIR}
 
 COPY . ${_WORKDIR}
 
-# WORKDIR /foo
-# RUN pwd
-
 RUN pip install -r requirements.txt
 
 EXPOSE 8000
