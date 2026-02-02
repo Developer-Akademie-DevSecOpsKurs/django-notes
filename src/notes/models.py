@@ -17,7 +17,7 @@ class NotesUser(AbstractNotesModel, AbstractUser):
     phone_number = models.CharField()
 
 
-class Notes(AbstractNotesModel):
+class Note(AbstractNotesModel):
 
     title = models.CharField(max_length=80)
     description = models.TextField()
@@ -26,3 +26,6 @@ class Notes(AbstractNotesModel):
         to=NotesUser,
         on_delete=models.CASCADE
     )
+
+    def __str__(self,):
+        return f"{self.id}"
