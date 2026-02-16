@@ -1,0 +1,109 @@
+name: Security SCA (Project + Container)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: security-sca-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Schärfe nach Bedarf: HIGH,CRITICAL ist häufig ein guter Start
+  TRIVY_SEVERITY: "HIGH,CRITICAL"
+  TRIVY_IGNORE_UNFIXED: "true"
+
+jobs:
+  sca-project:
+    name: sca-project (pip-audit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pip-audit
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit
+
+      - name: Run pip-audit (SARIF)
+        uses: pypa/gh-action-pip-audit@v1.1.0
+        with:
+            # NOTE: only works with requirements-style inputs
+            inputs: requirements.txt
+            no-deps: true
+
+
+  sca-container-definition:
+    name: sca-container-definition (trivy config)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Trivy config scan (Dockerfile / IaC) -> SARIF
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: "config"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-config.sarif"
+          severity: "${{ env.TRIVY_SEVERITY }}"
+          # Optional: Policy-as-Code (trivy misconfig) ist in config-scan enthalten.
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-config.sarif
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+
+  sca-container-image:
+    name: sca-container-image (build + trivy image)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Baut lokal (kein Push), damit Trivy das Image scannen kann.
+      - name: Build container image (local)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          load: true
+          tags: local/django-app:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Trivy image scan -> SARIF
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: "local/django-app:${{ github.sha }}"
+          exit-code: "1"
+          format: "sarif"
+          output: "trivy-image.sarif"
+          severity: "${{ env.TRIVY_SEVERITY }}"
+          vuln-type: "os,library"
+          ignore-unfixed: ${{ env.TRIVY_IGNORE_UNFIXED }}
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-image.sarif
