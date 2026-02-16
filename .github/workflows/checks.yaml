@@ -1,0 +1,25 @@
+name: CI/CD Workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v6.2.0
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-dev.txt
+      - name: Run Checks
+        run: |
+          black --check ./src
+          isort --check-only ./src
