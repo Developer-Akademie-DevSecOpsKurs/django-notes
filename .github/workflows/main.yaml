@@ -12,5 +12,7 @@ on:
 jobs:
     code_quality_checks:
         uses: ./.github/workflows/checks.yaml
-    # unit_tests:
-    # security_analysis:
+    build_container_image:
+        uses: ./.github/workflows/build.yaml
+    security_analysis:
+        uses: ./.github/workflows/security.yaml
