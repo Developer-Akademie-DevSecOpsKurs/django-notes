@@ -1,0 +1,19 @@
+name: Pipeline Workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  pull_request:
+    branches: [main]
+
+
+jobs:
+    code_quality_checks:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Run code quality checks
+              uses: ./.github/workflows/checks.yaml
+    # unit_tests:
+    # security_analysis:
