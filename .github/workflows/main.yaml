@@ -10,13 +10,17 @@ on:
 
 permissions:
   contents: read
-  packages: write
-  security-events: write
 
 jobs:
   code_quality_checks:
     uses: ./.github/workflows/checks.yaml
   build_container_image:
     uses: ./.github/workflows/build.yaml
+    permissions:
+      packages: write
+
   security_analysis:
     uses: ./.github/workflows/security.yaml
+    permissions:
+      security-events: write
+
