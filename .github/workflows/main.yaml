@@ -10,9 +10,9 @@ on:
 
 
 jobs:
-    code_quality_checks:
-        uses: ./.github/workflows/checks.yaml
-    build_container_image:
-        uses: ./.github/workflows/build.yaml
-    security_analysis:
-        uses: ./.github/workflows/security.yaml
+  code_quality_checks:
+    uses: ./.github/workflows/checks.yaml
+  build_container_image:
+    uses: ./.github/workflows/build.yaml
+  security_analysis:
+    uses: ./.github/workflows/security.yaml

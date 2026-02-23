@@ -42,9 +42,9 @@ jobs:
       - name: Run pip-audit (SARIF)
         uses: pypa/gh-action-pip-audit@v1.1.0
         with:
-            # NOTE: only works with requirements-style inputs
-            inputs: requirements.txt
-            no-deps: true
+          # NOTE: only works with requirements-style inputs
+          inputs: requirements.txt
+          no-deps: true
 
 
   sca-container-definition:
