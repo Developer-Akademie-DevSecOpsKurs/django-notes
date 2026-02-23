@@ -31,7 +31,7 @@ jobs:
     uses: ./.github/workflows/security.yaml
     permissions:
       security-events: write
-    needs:
-      - code_quality_checks
+    # needs:
+    #   - code_quality_checks
 
 
