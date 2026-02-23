@@ -53,7 +53,6 @@ jobs:
           format: "sarif"
           output: "trivy-config.sarif"
           severity: "${{ env.TRIVY_SEVERITY }}"
-          # Optional: Policy-as-Code (trivy misconfig) ist in config-scan enthalten.
 
       - name: Upload SARIF to GitHub Security
         uses: github/codeql-action/upload-sarif@v3

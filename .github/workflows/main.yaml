@@ -32,7 +32,6 @@ jobs:
     permissions:
       security-events: write
     needs:
-      - code_quality_checks
       - build_container_image
 
 
