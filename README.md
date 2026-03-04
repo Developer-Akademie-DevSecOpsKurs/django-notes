@@ -99,6 +99,40 @@ python manage.py collectstatic   # Collect static files for production
 **Testing:**
 ```bash
 python manage.py test            # Run test suite
+python manage.py test notes      # Run only the notes app tests
+```
+
+## Testing
+
+The `notes` app includes a suite of Django unit tests covering the data models and the Django admin panel. Tests are loaded from a fixture to provide a consistent, reproducible starting state for every test run.
+
+### Test structure
+
+| Module | Class | Coverage |
+|--------|-------|----------|
+| `notes/tests.py` | `NotesUserModelTest` | `NotesUser` model fields, string representation, and timestamps |
+| `notes/tests.py` | `NoteModelTest` | `Note` model fields, string representation, foreign-key relationship, cascade delete, and record count |
+| `notes/tests.py` | `NoteAdminTest` | Admin list and change views for both `Note` and `NotesUser` |
+
+### Fixture
+
+The fixture file `src/notes/fixtures/notes_fixture.json` is loaded automatically by each test class via `fixtures = ["notes_fixture.json"]`. It creates:
+
+- **pk 1** – an admin/superuser `NotesUser` (`username: admin`)
+- **pk 2** – a regular `NotesUser` (`username: testuser`)
+- **pk 1** – a `Note` owned by the admin user
+- **pk 2** – a `Note` owned by the regular user
+
+### Running the tests
+
+From the `src/` directory:
+
+```bash
+# Run the full notes test suite
+python manage.py test notes
+
+# Run with detailed output
+python manage.py test notes --verbosity=2
 ```
 
 ## Contributing
