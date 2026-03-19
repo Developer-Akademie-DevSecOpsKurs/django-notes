@@ -29,5 +29,13 @@ jobs:
     needs: 
       - checks
     steps:
-      - name: Testing Step
-        run: 'echo "TODO: implement"'
+      - name: Setup Python
+        uses: actions/setup-python@v6.2.0
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Run Checks
+        run: |
+          python src/manage.py test src
