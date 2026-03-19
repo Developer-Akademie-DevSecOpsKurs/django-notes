@@ -1,0 +1,66 @@
+[
+  {
+    "model": "notes.notesuser",
+    "pk": 1,
+    "fields": {
+      "password": "!unusable",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "Admin",
+      "last_name": "User",
+      "email": "admin@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-01-01T00:00:00Z",
+      "groups": [],
+      "user_permissions": [],
+      "phone_number": "1234567890",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "notes.notesuser",
+    "pk": 2,
+    "fields": {
+      "password": "!unusable",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "testuser",
+      "first_name": "Test",
+      "last_name": "User",
+      "email": "testuser@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-01-01T00:00:00Z",
+      "groups": [],
+      "user_permissions": [],
+      "phone_number": "9876543210",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "notes.note",
+    "pk": 1,
+    "fields": {
+      "title": "First Note",
+      "description": "This is the first test note.",
+      "created_by": 1,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "notes.note",
+    "pk": 2,
+    "fields": {
+      "title": "Second Note",
+      "description": "This is the second test note.",
+      "created_by": 2,
+      "created_at": "2024-01-02T00:00:00Z",
+      "updated_at": "2024-01-02T00:00:00Z"
+    }
+  }
+]
