@@ -1,0 +1,37 @@
+name: Pipeline Workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  code_quality_checks:
+    uses: ./.github/workflows/checks.yaml
+
+  build_container_image:
+    uses: ./.github/workflows/build.yaml
+    permissions:
+      packages: write
+    # should only run if the code quality checks have passed
+    needs:
+      - code_quality_checks
+
+  # sca-container image should only run if all
+  # previous jobs have succeeded.
+  # sca-project and sca-container-definition can run as 
+  # soon as the code-quality checks have passed
+  security_analysis:
+    uses: ./.github/workflows/security.yaml
+    permissions:
+      security-events: write
+    needs:
+      - build_container_image
+
+
