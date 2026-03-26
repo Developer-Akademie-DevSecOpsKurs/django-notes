@@ -37,64 +37,65 @@ jobs:
           inputs: requirements.txt
           no-deps: true
 
+  ## CURRENTLY DISABLED - requires adjustments due to the recent 
+  ## trivy incident and the fact that we currently don't have a good caching strategy for the container build, which leads to long runtimes.
+  # sca-container-definition:
+  #   name: sca-container-definition (trivy config)
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-  sca-container-definition:
-    name: sca-container-definition (trivy config)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  #     - name: Trivy config scan (Dockerfile / IaC) -> SARIF
+  #       uses: aquasecurity/trivy-action@0.24.0
+  #       with:
+  #         scan-type: "config"
+  #         scan-ref: "."
+  #         format: "sarif"
+  #         output: "trivy-config.sarif"
+  #         severity: "${{ env.TRIVY_SEVERITY }}"
 
-      - name: Trivy config scan (Dockerfile / IaC) -> SARIF
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          scan-type: "config"
-          scan-ref: "."
-          format: "sarif"
-          output: "trivy-config.sarif"
-          severity: "${{ env.TRIVY_SEVERITY }}"
-
-      - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: trivy-config.sarif
-          token: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Upload SARIF to GitHub Security
+  #       uses: github/codeql-action/upload-sarif@v3
+  #       with:
+  #         sarif_file: trivy-config.sarif
+  #         token: ${{ secrets.GITHUB_TOKEN }}
 
 
-  sca-container-image:
-    name: sca-container-image (build + trivy image)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # sca-container-image:
+  #   name: sca-container-image (build + trivy image)
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
 
-      # Baut lokal (kein Push), damit Trivy das Image scannen kann.
-      - name: Build container image (local)
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./Dockerfile
-          push: false
-          load: true
-          tags: local/django-app:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+  #     # Baut lokal (kein Push), damit Trivy das Image scannen kann.
+  #     - name: Build container image (local)
+  #       uses: docker/build-push-action@v6
+  #       with:
+  #         context: .
+  #         file: ./Dockerfile
+  #         push: false
+  #         load: true
+  #         tags: local/django-app:${{ github.sha }}
+  #         cache-from: type=gha
+  #         cache-to: type=gha,mode=max
 
-      - name: Trivy image scan -> SARIF
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          image-ref: "local/django-app:${{ github.sha }}"
-          exit-code: "1"
-          format: "sarif"
-          output: "trivy-image.sarif"
-          severity: "${{ env.TRIVY_SEVERITY }}"
-          vuln-type: "os,library"
-          ignore-unfixed: ${{ env.TRIVY_IGNORE_UNFIXED }}
+  #     - name: Trivy image scan -> SARIF
+  #       uses: aquasecurity/trivy-action@0.24.0
+  #       with:
+  #         image-ref: "local/django-app:${{ github.sha }}"
+  #         exit-code: "1"
+  #         format: "sarif"
+  #         output: "trivy-image.sarif"
+  #         severity: "${{ env.TRIVY_SEVERITY }}"
+  #         vuln-type: "os,library"
+  #         ignore-unfixed: ${{ env.TRIVY_IGNORE_UNFIXED }}
 
-      - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: trivy-image.sarif
+  #     - name: Upload SARIF to GitHub Security
+  #       uses: github/codeql-action/upload-sarif@v3
+  #       with:
+  #         sarif_file: trivy-image.sarif
